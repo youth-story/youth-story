@@ -4,8 +4,8 @@ const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 require('dotenv').config();
-const {uploadArticle} = require('../helper/articles');
-const Article = require('../models/Article');
+// const {uploadArticle} = require('../helper/articles');
+const Contests = require('../models/Contests');
 
 router.post('/upload', async(req, res) => {
     return res.status(200).send('Works fine');
@@ -40,6 +40,18 @@ router.get('/top', async(req, res) => {
 });
 
 router.get('/recent', async(req, res) => {
+    return res.status(200).send('Works fine');
+});
+
+router.post('/apply/:id', async(req, res) => {
+    return res.status(200).send('Works fine');
+});
+
+router.put('/winner/:id/select-winners', async(req, res) => {
+    return res.status(200).send('Works fine');
+});
+
+router.post('/winner/:id/finalize-winner', async(req, res) => {
     return res.status(200).send('Works fine');
 });
 

@@ -9,7 +9,7 @@ const {toggleNewsLetter, addReview, addSponsor, applyCareers} = require('../help
 const Reviews = require('../models/Reviews');
 const NewsLetter = require('../models/NewsLetter');
 const AWS = require('../aws-config');
-const Careers = require('../models/Careers');
+const SuggestPerson = require('../models/SuggestPerson');
 
 router.post('/toggle-newsletter', requireAuth, async(req, res) => {
     toggleNewsLetter(req, res, NewsLetter);
@@ -19,12 +19,12 @@ router.post('/add-review', requireAuth, async(req, res) => {
     addReview(req, res, Reviews, User, AWS);
 });
 
-router.post('/add-sponsor', requireAuth, async(req, res) => {
+router.post('/add-sponsor', async(req, res) => {
     addSponsor(req, res, Partners, User, AWS);
 });
 
-router.post('/apply-careers', requireAuth, async(req, res) => {
-    applyCareers(req, res, Careers, User, AWS);
+router.post('/suggest-person', async(req, res) => {
+    return res.status(200).send('Works fine');
 });
 
 module.exports = router;
