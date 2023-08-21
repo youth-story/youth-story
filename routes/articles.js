@@ -4,43 +4,45 @@ const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 require('dotenv').config();
-const {uploadArticle} = require('../helper/articles');
+const {uploadArticle, readArticle, updateArticle, deleteArticle, toggleLikeArticle, shareArticle, commentArticle, recentArticle, topArticle} = require('../helper/articles');
 const Article = require('../models/Article');
+const Like = require('../models/Like');
+const Review = require('../models/Reviews');
 
 router.post('/upload', async(req, res) => {
-    return res.status(200).send('Works fine');
+    uploadArticle(req, res, Article, User);
 });
 
 router.get('/view/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    readArticle(req, res, Article, User);
 });
 
 router.put('/update/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    updateArticle(req, res, Article, User);
 });
 
 router.delete('/delete/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    deleteArticle(req, res, Article, User);
 });
 
-router.post('/like/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+router.post('/toggle-like/:id', async(req, res) => {
+    toggleLikeArticle(req, res, Article, Like, User);
 });
 
 router.get('/share/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    shareArticle(req, res, Article, User);
 });
 
 router.post('/comment/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    commentArticle(req, res, Article, Review, User);
 });
 
 router.get('/top', async(req, res) => {
-    return res.status(200).send('Works fine');
+    topArticle(req, res, Article, User);
 });
 
 router.get('/recent', async(req, res) => {
-    return res.status(200).send('Works fine');
+    recentArticle(req, res, Article, User);
 });
 
 module.exports = router;

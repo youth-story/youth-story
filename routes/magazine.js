@@ -4,43 +4,45 @@ const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 require('dotenv').config();
-// const {uploadArticle} = require('../helper/magazine');
+const {uploadMagazine, readMagazine, updateMagazine, deleteMagazine, toggleLikeMagazine, shareMagazine, commentMagazine, recentMagazine, downloadMagazine} = require('../helper/magazine');
 const Magazine = require('../models/Magazine');
+const Like = require('../models/Like');
+const Reviews = require('../models/Reviews');
 
 router.post('/upload', async(req, res) => {
-    return res.status(200).send('Works fine');
+    uploadMagazine(req, res, Magazine, User);
 });
 
 router.get('/view/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    readMagazine(req, res, Magazine, Like, Reviews, User);
 });
 
 router.put('/update/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    updateMagazine(req, res, Magazine, User);
 });
 
 router.delete('/delete/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    deleteMagazine(req, res, Magazine, User);
 });
 
 router.post('/like/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    toggleLikeMagazine(req, res, Magazine, Like, User);
 });
 
 router.get('/share/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    shareMagazine(req, res, Magazine, User);
 });
 
 router.post('/comment/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    commentMagazine(req, res, Magazine, Reviews, User);
 });
 
 router.get('/recent', async(req, res) => {
-    return res.status(200).send('Works fine');
+    recentMagazine(req, res, Magazine, User);
 });
 
-router.get('/rate/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+router.post('/download/:id', async(req, res) => {
+    downloadMagazine(req, res, Magazine, User);
 });
 
 module.exports = router;

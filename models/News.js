@@ -16,14 +16,24 @@ const newsSchema = new mongoose.Schema({
     required: true,
     maxlength: 1500,
   },
-  thumbnailImage: {
+  thumbnail: {
     type: String, 
     required: true
   },
-  categories: [{
+  category: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
-  }]
+    required: false,
+        default: null,
+  }],
+  views: {
+    type: Number,
+    default: 300,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 const News = mongoose.model('news', newsSchema);

@@ -10,24 +10,26 @@ const careerSchema = new mongoose.Schema({
         required: true,
     },
     listed_by: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
     type: {
         type: String,
         required: true,
+        enum: ['Full Time', 'Part Time'],
     },
     pay: {
         type: Number,
         required: true,
     },
-    applicants: [{
-        username: String,
-        resume: String,
-    }],
     status: {
         type: Number,
         default: 1,
+    },
+    views: {
+        type: Number,
+        default: 300,
     },
     createdAt: { 
         type: Date,

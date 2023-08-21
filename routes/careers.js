@@ -3,40 +3,41 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
-require('dotenv').config();
-// const {uploadArticle} = require('../helper/articles');
+require('dotenv').config(); 
+const {uploadCareers, readCareers, updateCareers, deleteCareers, shareCareers, applyCareers, recentCareers, topCareers} = require('../helper/careers');
 const Careers = require('../models/Careers');
+const Applicant = require('../models/Applicant');
 
 router.post('/upload', async(req, res) => {
-    return res.status(200).send('Works fine');
+    uploadCareers(req, res, Careers, Applicant, User);
 });
 
 router.get('/view/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    readCareers(req, res, Careers, Applicant, User);
 });
 
 router.put('/update/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    updateCareers(req, res, Careers, Applicant, User);
 });
 
 router.delete('/delete/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    deleteCareers(req, res, Careers, Applicant, User);
 });
 
 router.get('/share/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
-});
-
-router.get('/top', async(req, res) => {
-    return res.status(200).send('Works fine');
-});
-
-router.get('/recent', async(req, res) => {
-    return res.status(200).send('Works fine');
+    shareCareers(req, res, Careers, Applicant, User);
 });
 
 router.post('/apply/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    applyCareers(req, res, Careers, Applicant, User);
+});
+
+router.get('/recent', async(req, res) => {
+    recentCareers(req, res, Careers, Applicant, User);
+});
+
+router.get('/top', async(req, res) => {
+    topCareers(req, res, Careers, Applicant, User);
 });
 
 module.exports = router;

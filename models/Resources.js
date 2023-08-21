@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const eventsSchema = new mongoose.Schema({
+const resourcesSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -36,6 +36,6 @@ const eventsSchema = new mongoose.Schema({
   }
 });
 
-const Events = mongoose.model('events', eventsSchema);
+const Resources = mongoose.model('Resources', resourcesSchema);
 
-module.exports = Events;
+module.exports = Resources;

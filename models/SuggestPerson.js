@@ -7,7 +7,7 @@ const suggestPersonSchema = new mongoose.Schema({
   },
   suggestions: [{
     suggested: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     social: {

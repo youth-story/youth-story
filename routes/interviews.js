@@ -3,44 +3,46 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
-require('dotenv').config();
-// const {uploadArticle} = require('../helper/articles');
-const Interview = require('../models/Interviews');
+require('dotenv').config(); 
+const {uploadInterviews, readInterviews, updateInterviews, deleteInterviews, toggleLikeInterviews, shareInterviews, commentInterviews, recentInterviews, topInterviews} = require('../helper/interviews');
+const Interviews = require('../models/Interviews');
+const Like = require('../models/Like');
+const Review = require('../models/Reviews');
 
 router.post('/upload', async(req, res) => {
-    return res.status(200).send('Works fine');
+    uploadInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.get('/view/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    readInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.put('/update/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    updateInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.delete('/delete/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    deleteInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.post('/like/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    toggleLikeInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.get('/share/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
+    shareInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.post('/comment/:id', async(req, res) => {
-    return res.status(200).send('Works fine');
-});
-
-router.get('/top', async(req, res) => {
-    return res.status(200).send('Works fine');
+    commentInterviews(req, res, Interviews, Like, Review, User);
 });
 
 router.get('/recent', async(req, res) => {
-    return res.status(200).send('Works fine');
+    recentInterviews(req, res, Interviews, Like, Review, User);
+});
+
+router.get('/top', async(req, res) => {
+    topInterviews(req, res, Interviews, Like, Review, User);
 });
 
 module.exports = router;

@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 
 const contestSchema = new mongoose.Schema({
-  created_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  created_at: {
+  createdAt: {
     type: Date,
     default: Date.now
   },
@@ -14,14 +9,18 @@ const contestSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  applicants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Applicant',
-  }],
-  winners: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Applicant',
-  }]
+  title: {
+    type: String,
+    required: true,
+  },
+  desc: {
+    type: String,
+    required: true,
+  },
+  prizes: {
+    type: String,
+    required: true,
+  }
 });
 
 const Contest = mongoose.model('Contest', contestSchema);

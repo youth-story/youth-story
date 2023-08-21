@@ -5,7 +5,7 @@ const Partners = require('../models/Partners');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 require('dotenv').config();
-const {toggleNewsLetter, addReview, addSponsor, applyCareers} = require('../helper/contact');
+const {toggleNewsLetter, addReview, addSponsor, suggestPerson} = require('../helper/contact');
 const Reviews = require('../models/Reviews');
 const NewsLetter = require('../models/NewsLetter');
 const AWS = require('../aws-config');
@@ -24,7 +24,7 @@ router.post('/add-sponsor', async(req, res) => {
 });
 
 router.post('/suggest-person', async(req, res) => {
-    return res.status(200).send('Works fine');
+    suggestPerson(req, res, User, SuggestPerson, AWS);
 });
 
 module.exports = router;

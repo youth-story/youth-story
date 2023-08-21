@@ -5,44 +5,44 @@ const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 require('dotenv').config(); 
 const {uploadNews, readNews, updateNews, deleteNews, toggleLikeNews, shareNews, commentNews, recentNews, topNews} = require('../helper/news');
-const News = require('../models/News');
+const Resources = require('../models/Resources');
 const Like = require('../models/Like');
 const Review = require('../models/Reviews');
 
 router.post('/upload', async(req, res) => {
-    uploadNews(req, res, News, Like, Review, User);
+    uploadNews(req, res, Resources, Like, Review, User);
 });
 
 router.get('/view/:id', async(req, res) => {
-    readNews(req, res, News, Like, Review, User);
+    readNews(req, res, Resources, Like, Review, User);
 });
 
 router.put('/update/:id', async(req, res) => {
-    updateNews(req, res, News, Like, Review, User);
+    updateNews(req, res, Resources, Like, Review, User);
 });
 
 router.delete('/delete/:id', async(req, res) => {
-    deleteNews(req, res, News, Like, Review, User);
+    deleteNews(req, res, Resources, Like, Review, User);
 });
 
 router.post('/like/:id', async(req, res) => {
-    toggleLikeNews(req, res, News, Like, Review, User);
+    toggleLikeNews(req, res, Resources, Like, Review, User);
 });
 
 router.get('/share/:id', async(req, res) => {
-    shareNews(req, res, News, Like, Review, User);
+    shareNews(req, res, Resources, Like, Review, User);
 });
 
 router.post('/comment/:id', async(req, res) => {
-    commentNews(req, res, News, Like, Review, User);
+    commentNews(req, res, Resources, Like, Review, User);
 });
 
 router.get('/recent', async(req, res) => {
-    recentNews(req, res, News, Like, Review, User);
+    recentNews(req, res, Resources, Like, Review, User);
 });
 
 router.get('/top', async(req, res) => {
-    topNews(req, res, News, Like, Review, User);
+    topNews(req, res, Resources, Like, Review, User);
 });
 
 module.exports = router;

@@ -1,4 +1,12 @@
 const { events } = require("../models/User");
+const Reviews = require('../models/Reviews');
+const Magazines = require('../models/Magazine');
+const Articles = require('../models/Article');
+const NewsLetter = require('../models/NewsLetter');
+const Interviews = require('../models/Interviews');
+const Events = require('../models/Events');
+const News = require('../models/News');
+const Resources = require('../models/Resources');
 
 async function getTeamDetails(req, res, User) {
 
@@ -17,54 +25,21 @@ async function getTeamDetails(req, res, User) {
 
 }
 
-async function getPartnerDetails(req, res, Partner) {
-
-    try {
-        const partners = await Partner.find({}, 'logo').select('_id name');
-        const logosWithIds = partners.map((partner) => ({
-        _id: partner._id,
-        logo: partner.logo,
-        name: partner.name,
-        }));
-        return res.status(200).send(logosWithIds);
-    }
-    catch (error)
-    {
-        return res.status(500).send('Something Went Wrong');
-    }
-
-}
-
-async function getTopReviews(req, res, Reviews) {
-
-    try {
-        const reviews = await Reviews.find({ ratings: { $gte: 4 } })
-          .limit(5)
-          .exec();
-      
-        return res.status(200).json({ reviews });
-      } catch (error) {
-        console.error('Error retrieving reviews:', error);
-        return res.status(500).send('Something went wrong');
-      }      
-
-}
-
-async function getStats(req, res, User, Partners, Reviews) {
+async function getStats(req, res, User) {
 
     try {
         const userCount = await User.countDocuments({});
-        const partnerCount = await Partners.countDocuments({});
+        const newsLetterCount = await NewsLetter.countDocuments({});
         const reviewCount = await Reviews.countDocuments({});
-        // const magazineCount = await Magazines.countDocuments({});
-        // const articleCount = await Articles.countDocuments({});
-        // const interviewCount = await Interviews.countDocuments({});
-        // const eventCount = await Events.countDocuments({});
-        // const newsCount = await News.countDocuments({});
-        // const resourceCount = await Resources.countDocuments({});
+        const magazineCount = await Magazines.countDocuments({});
+        const articleCount = await Articles.countDocuments({});
+        const interviewCount = await Interviews.countDocuments({});
+        const eventCount = await Events.countDocuments({});
+        const newsCount = await News.countDocuments({});
+        const resourceCount = await Resources.countDocuments({});
         const contentCount = magazineCount + articleCount // + interviewCount + eventCount + newsCount + resourceCount;
 
-        return res.status(200).json({'users': userCount, 'partners': partnerCount, 'reviews': reviewCount, 'contents': contentCount});
+        return res.status(200).json({'users': userCount, 'reviews': reviewCount, 'contents': contentCount, 'newsLetter': newsLetterCount, 'interview': interviewCount, 'news': newsCount, 'events': eventCount, 'resources': resourceCount});
 
     }
     catch(error)
@@ -76,7 +51,5 @@ async function getStats(req, res, User, Partners, Reviews) {
 
 module.exports = {
     getTeamDetails: getTeamDetails,
-    getPartnerDetails: getPartnerDetails,
-    getTopReviews: getTopReviews,
     getStats: getStats,
 }

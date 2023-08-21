@@ -54,18 +54,24 @@
 
 async function createNewUser(req, res, jwt, User, bcrypt, sendinblueClient, official_email) {
     try {
-      const { name, email, password, username } = req.body;
-  
+      const { name, email, password, username, mode } = req.body;
+
       // Check if user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ error: 'Email already registered' });
       }
-  
-      const usernameTaken = await User.findOne({ username });
-      if (usernameTaken) {
-        return res.status(400).json({ error: 'Username not available' });
+      if (mode == 1)
+      {
+        const user = await new User({name: name, email: email, password: -1, username: '-1', mode: 1});
+        user.save();
+        return res.status(201).json({ message: 'User registered successfully' });
       }
+      
+        const usernameTaken = await User.findOne({ username });
+        if (usernameTaken) {
+          return res.status(400).json({ error: 'Username not available' });
+        }
   
       // Hash the password
       const salt = await bcrypt.genSalt(10);
@@ -75,7 +81,7 @@ async function createNewUser(req, res, jwt, User, bcrypt, sendinblueClient, offi
       const otp = Math.floor(100000 + Math.random() * 900000);
   
       // Create a new user
-      const newUser = new User({ name, email, password: hashedPassword, username });
+      const newUser = new User({ name, email, password: hashedPassword, username, mode: 0 });
       await newUser.save();
 
       // const response = await sendWelcomeMail(name, email, official_email, sendinblueClient);
@@ -83,7 +89,7 @@ async function createNewUser(req, res, jwt, User, bcrypt, sendinblueClient, offi
       // {
       //   return res.status(500).json({ error: 'Failed to send welcome mail' });
       // }
-  
+        
       res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
       res.status(500).json({ error: 'Server error' });
@@ -92,27 +98,48 @@ async function createNewUser(req, res, jwt, User, bcrypt, sendinblueClient, offi
 
   async function loginUser(req, res, jwt, User, bcrypt) {
     try {
-        const { email, password, rememberMe } = req.body;
-    
-        // Find the user by email
-        const user = await User.findOne({ email });
-        if (!user) {
-          return res.status(401).json({ error: 'Invalid credentials' });
+        const { name, username, email, password, rememberMe, mode } = req.body;
+
+        if (mode == 1)
+        {
+          const checkUser = await User.findOne({email: email});
+          if (!checkUser)
+          {
+            const newUser = await new User({name: name, email: email, password: -1, username: '-1', mode: 1});
+            newUser.save();
+          }
         }
-    
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-          return res.status(401).json({ error: 'Invalid credentials' });
+      
+        if (mode == 0) {
+          // Find the user by email
+          const user = await User.findOne({ username });
+          if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+          }
+          // Compare passwords
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+          }
         }
     
         // Generate JWT token
+        let user;
+        if (mode == 0)
+        {
+          user = await User.findOne({username: username});
+        }
+        else
+        {
+          user = await User.findOne({email: email});
+        }
         const token = jwt.sign({ user: user.id }, process.env.JWT_SECRET, {
-          expiresIn: rememberMe ? '7d' : '1h', // Set token expiration based on rememberMe value
+          expiresIn: rememberMe ? '30d' : '1d', // Set token expiration based on rememberMe value
         });
     
         res.json({ token });
       } catch (err) {
+        console.log(err);
         res.status(500).json({ error: 'Server error' });
       }
   }

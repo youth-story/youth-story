@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const magazineSchema = new mongoose.Schema({
-  image: {
+  cover: {
     type: String,
     required: true
   },
@@ -17,9 +17,13 @@ const magazineSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  rating: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Rating',
+  downloads: {
+    type: Number,
+    default: 300,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
   }
 });
 

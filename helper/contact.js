@@ -7,15 +7,14 @@ async function toggleNewsLetter(req, res, NewsLetter) {
 
         if (newsletter) {
             await NewsLetter.deleteOne({ user_id: user_id });
+            return res.status(200).send('Subscription removed successfully');
         } else {
             const newNewsletter = new NewsLetter({ user_id: user_id });
             await newNewsletter.save();
+            return res.status(200).send('Subscription added successfully');
         }
 
-        return res.status(200).send('Subscription toggled successfully');
-
     } catch (error) {
-        console.log(error);
       return res.status(500).send('Something went wrong');
     }
   }
@@ -127,70 +126,76 @@ async function addSponsor(req, res, Partners, User, AWS)
 
 }
 
-async function applyCareers(req, res, Careers, User, AWS)
-{
-    const { username, resume, job_id } = req.body;
-
-    if (!username || !resume || !job_id) {
-    return res.status(400).send('Please fill all fields');
-    } 
-
+async function suggestPerson(req, res, User, SuggestPerson, AWS) {
     try {
-    const user = await User.findOne({ username: username });
-
-    if (!user) {
+      const { user_id, name, social } = req.body;
+  
+      if (!user_id || !name || !social) {
+        return res.status(400).send('Please fill all fields');
+      }
+  
+      const user = await User.findById(user_id);
+  
+      if (!user) {
         return res.status(400).send('User not found');
-    }
-
-    const career = await Careers.findOne({_id: job_id});
-
-    if (!career)
-    {
-        return res.status(400).send('Job Posting doesnot exist');
-    }
-
-    await career.updateOne(
-        { _id: job_id },
-        { $push: { applicants: {username, resume} } }
-      );
-
-    const params = {
+      }
+  
+      const suggestion = {
+        suggested: name,
+        social: social,
+      };
+  
+      let suggesterEntry = await SuggestPerson.findOne({ suggester: user_id });
+  
+      if (!suggesterEntry) {
+        // If there is no existing entry, create a new one
+        suggesterEntry = new SuggestPerson({
+          suggester: user_id,
+          suggestions: [suggestion],
+        });
+      } else {
+        suggesterEntry.suggestions.push(suggestion);
+      }
+  
+      // Save the updated suggesterEntry to the database
+      await suggesterEntry.save();
+  
+      const params = {
         Destination: {
-        ToAddresses: ['youthstory.d2d@gmail.com']
+          ToAddresses: ['youthstory.d2d@gmail.com'],
         },
         Message: {
-        Body: {
+          Body: {
             Text: {
-            Data: `Hello team, \n \n New application for ${career.job_title}(listed by ${career.listed_by} on ${career.createdAt}) by \n \n username: ${username}, \t email: ${user.email}, \t resume: ${resume} \n \n Hope this one gets selected! \n \n Thanks and regards, \n Youth Story team`
-            }
+              Data: `@${user.username} recommends us to interview ${name} and the suggested person's social media is ${social}.`,
+            },
+          },
+          Subject: {
+            Data: `Suggestion by @${user.username}`,
+          },
         },
-        Subject: {
-            Data: `Careers |${career.job_title}| Application by @${user.username}`
-        }
-        },
-        Source: 'youthstory.d2d@gmail.com'
-    };
-
-    const ses = new AWS.SES();
-    ses.sendEmail(params, (err, data) => {
+        Source: 'youthstory.d2d@gmail.com',
+      };
+  
+      const ses = new AWS.SES();
+      ses.sendEmail(params, (err, data) => {
         if (err) {
-            console.log(err);
-        return res.status(500).send('Error sending request');
+          console.error(err);
+          return res.status(500).send('Error sending request');
         } else {
-        return res.status(200).send('Application sent Successfully!');
+          return res.status(200).send('Suggestion Request sent Successfully!');
         }
-    });
-
+      });
     } catch (error) {
-        console.log(error);
-        return res.status(500).send('Something Went Wrong');
+      console.log(error);
+      return res.status(500).send('Something Went Wrong');
     }
-}
+}  
   
   module.exports = {
     toggleNewsLetter: toggleNewsLetter,
     addReview: addReview,
     addSponsor: addSponsor,
-    applyCareers: applyCareers,
+    suggestPerson: suggestPerson,
   };
   

@@ -12,13 +12,13 @@ const likeSchema = new mongoose.Schema({
   },
   likeableType: {
     type: String,
-    enum: ['Article', 'Interview', 'Post', 'News', 'Events', 'Magazine', 'Contests'],
+    enum: ['Article', 'Interviews', 'Post', 'News', 'Events', 'Magazine', 'Contests'],
     required: true
   },
-  comment: {
-    type: String,
-    required: true
-  },
+  liked: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const Like = mongoose.model('like', likeSchema);
