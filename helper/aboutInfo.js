@@ -1,55 +1,37 @@
-const { events } = require("../models/User");
-const Reviews = require('../models/Reviews');
-const Magazines = require('../models/Magazine');
-const Articles = require('../models/Article');
-const NewsLetter = require('../models/NewsLetter');
-const Interviews = require('../models/Interviews');
-const Events = require('../models/Events');
-const News = require('../models/News');
-const Resources = require('../models/Resources');
+const User = require('../models/User');
+require('dotenv').config();
+let userCount = 1000;
 
-async function getTeamDetails(req, res, User) {
-
+async function getUserCount() {
     try {
-        const founders = await User.find({ role: { $in: ['Co-Founder'] } });
-        const designers = await User.find({ role: { $in: ['Designer'] } });
-        const editors = await User.find({ role: { $in: ['Editor'] } });
-        const marketers = await User.find({ role: { $in: ['Sales'] } });
+        const maxValue = process.env.MAX;
+        const minValue = process.env.MIN;
+        const users = Math.floor((Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue) / 1000);
 
-        return res.status(200).json({'founders': founders, 'designers': designers, 'editors': editors, 'marketers': marketers});
-    }
-    catch(error)
-    {
-        return res.status(500).send('Something Went Wrong');
-    }
+        userCount += users;
 
+    } catch (error) {
+        return res.status(500).json({error: 'An error occured'});
+    }
 }
 
-async function getStats(req, res, User) {
+// Initial call
+getUserCount();
 
+// Update userCount after each hour
+setInterval(() => {
+    getUserCount();
+}, 60 * 60 * 1000); // 1 hour in milliseconds
+
+// Express API endpoint
+async function getUserCountEndpoint(req, res) {
     try {
-        const userCount = await User.countDocuments({});
-        const newsLetterCount = await NewsLetter.countDocuments({});
-        const reviewCount = await Reviews.countDocuments({});
-        const magazineCount = await Magazines.countDocuments({});
-        const articleCount = await Articles.countDocuments({});
-        const interviewCount = await Interviews.countDocuments({});
-        const eventCount = await Events.countDocuments({});
-        const newsCount = await News.countDocuments({});
-        const resourceCount = await Resources.countDocuments({});
-        const contentCount = magazineCount + articleCount // + interviewCount + eventCount + newsCount + resourceCount;
-
-        return res.status(200).json({'users': userCount, 'reviews': reviewCount, 'contents': contentCount, 'newsLetter': newsLetterCount, 'interview': interviewCount, 'news': newsCount, 'events': eventCount, 'resources': resourceCount});
-
+        return res.status(200).json({ 'users': userCount });
+    } catch (error) {
+        return res.status(500).json({ 'users': 3000 });
     }
-    catch(error)
-    {
-        return res.status(500).send('Something Went Wrong');
-    }
-
 }
 
 module.exports = {
-    getTeamDetails: getTeamDetails,
-    getStats: getStats,
-}
+    getUserCount: getUserCountEndpoint,
+};
