@@ -11,7 +11,7 @@ async function getUserCount() {
         userCount += users;
 
     } catch (error) {
-        return res.status(500).json({error: 'An error occured'});
+        return res.status(500).json({error: 'Something Went Wrong'});
     }
 }
 
@@ -19,8 +19,8 @@ async function getUserCount() {
 getUserCount();
 
 // Update userCount after each hour
-setInterval(() => {
-    getUserCount();
+setInterval(async () => {
+    await getUserCount();
 }, 60 * 60 * 1000); // 1 hour in milliseconds
 
 // Express API endpoint
